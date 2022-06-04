@@ -194,8 +194,10 @@ class MainWindow(QMainWindow):
 """)
             self.connectionDB.commit()
 
-        self.update_table_UserBooks(self.ui.table_UserYour)
-        self.update_table_UserBooks(self.ui.table_UserBooksLibrary)
+        try: self.update_table_UserBooks(self.ui.table_UserYour)
+        except: pass
+        try: self.update_table_UserBooks(self.ui.table_UserBooksLibrary)
+        except: pass
         self.ui.table_OperationsLibrary.clearContents()
         self.ui.table_OperationsLibrary.setRowCount(0)
 
