@@ -287,10 +287,11 @@ class MainWindow(QMainWindow):
 
         res = self.cur.execute(
             f'SELECT * FROM Journal WHERE user_id={index_User} AND Time_giveback IS NULL').fetchall()
+        print(res)
         hor_lab = ["operation_id",
-                   "User",
-                   "Book",
                    "Librarian",
+                   "Book",
+                   "User",
                    "Amount",
                    "Time taked",
                    "Amount give back"
@@ -303,9 +304,10 @@ class MainWindow(QMainWindow):
 
         for i, row in enumerate(res):
             for j, val in enumerate(row[:-1]):
+                print(row[:-1])
                 if j == 1:
                     val = list(self.cur.execute(
-                        f"SELECT LastName, FirstName, MiddleName FROM User WHERE user_id={val}").fetchall()[0])
+                        f"SELECT LastName, FirstName, MiddleName FROM Librarian WHERE librarian_id={val}").fetchall()[0])
                     val[1] = f"{val[1][0]}."
                     val[2] = f"{val[2][0]}."
                     val = ' '.join(val)
@@ -314,7 +316,8 @@ class MainWindow(QMainWindow):
                         f"SELECT Name FROM Book WHERE book_id={val}").fetchall()[0][0]
                 if j == 3:
                     val = list(self.cur.execute(
-                        f"SELECT LastName, FirstName, MiddleName FROM Librarian WHERE librarian_id={val}").fetchall()[0])
+                        f"SELECT LastName, FirstName, MiddleName FROM User WHERE user_id={val}").fetchall()[0])
+                    print(val)
                     val[1] = f"{val[1][0]}."
                     val[2] = f"{val[2][0]}."
                     val = ' '.join(val)
