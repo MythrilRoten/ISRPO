@@ -256,7 +256,7 @@ class MainWindow(QMainWindow):
 
         for row in range(target.rowCount()):
             if target.item(row, 1).text() == name_book and target.item(row, 3).text() == txt.capitalize():
-                if int(target.item(row, 2).text()) + int(src.item(row, 6).text()) >= int(src.item(index, 4).text()):
+                if int(target.item(row, 2).text()) + int(src.item(index, 6).text()) >= int(src.item(index, 4).text()):
                     return QMessageBox.information(self, "Information", f"You cant {txt} more books")
                 target.setItem(row, 2, QTableWidgetItem(
                     str(int(target.item(row, 2).text()) + 1)))
