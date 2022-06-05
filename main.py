@@ -3,6 +3,7 @@
 import sys
 import sqlite3
 import os
+from icecream import ic
 from datetime import date
 from docxtpl import DocxTemplate
 from pathlib import Path
