@@ -36,6 +36,11 @@ class MainWindow(QMainWindow):
         self.passUserWindow: bool = False
         self.passLibrarianWindow: bool = False
 
+        self.ui.actionInstructions.triggered.connect(
+            lambda: QMessageBox.information(self,"Информация", "Для начала работы для пользователя необходимо:\n    1.Войти в пункт Main->User.\n    2.Зайти в свой аккаунт (Если вы уже брали книгу, то достаточно ввести Ваше ФИО, иначе ввести все данные.\n    3.Выбрать книгу из выбранный таблицы кнопкой Take или двойным щелчком по книге.\n    4.Если Вы хотите сдать книгу, то выбрать свои книги тем же способом, что и описано в пункте 3, только кнопка Give.\n    5.Далее нажать на кнопку Printout и отнести этот документ к библиотекарю\n\nДля начала работы от лица библиотекаря необходимо:\n    1.Зайти в пункт Service->Librarian.\n    2.Ввести данные пользователя, который хочет выполнить операции.\n    3.Сделать необходимые данные, согласно документу. Кнопка Take означает взять, а кнопка Give означает отдать.\n    4.После изменений необходимо нажать на кнопку Make Changes и отдать или взять у пользователя книги"))
+        self.ui.actionAuthors.triggered.connect(lambda: QMessageBox.information(self,
+            "Информация", "Авторы этой программы являются курсанты 331 группы ТАТК ГА\nНедоспасов Е.Д, Хасанова А.Е"))
+
         self.ui.actionUser.triggered.connect(
             lambda: self.setting(self.ui.WindowUserMain.parent() if self.passUserWindow else self.ui.WindowUserAuthentication.parent()))
         self.ui.actionLibrarian.triggered.connect(
@@ -172,6 +177,9 @@ class MainWindow(QMainWindow):
                 f'SELECT * FROM Journal WHERE user_id={indexUser} AND book_id={int(record[0])} and Amount_giveback={amount} AND Time_giveBack IS NULL').fetchall()[0]
             self.cur.execute(
                 f'UPDATE Journal SET Amount_giveback={amount+int(record[2])} WHERE user_id={indexUser} AND book_id={int(record[0])} AND Time_giveback IS NULL AND operation_id={oper_id[0]}')
+            amount_books = self.cur.execute(
+                f'SELECT Amount From Book WHERE book_id={int(record[0])}').fetchone()[0]
+            self.cur.execute(f'UPDATE Book SET Amount={amount_books + amount}')
             oper_id = self.cur.execute(
                 f'SELECT * FROM Journal WHERE user_id={indexUser} AND book_id={int(record[0])} and Amount_giveback={amount+int(record[2])} AND Time_giveBack IS NULL').fetchall()[0]
             if oper_id[4] == oper_id[6]:
@@ -180,6 +188,10 @@ class MainWindow(QMainWindow):
             self.connectionDB.commit()
 
         for record in give:
+            amount_books = self.cur.execute(
+                f'SELECT Amount From Book WHERE book_id={int(record[0])}').fetchone()[0]
+            self.cur.execute(
+                f'UPDATE Book SET Amount={amount_books + int(record[2])}')
             self.cur.execute(f"""INSERT INTO Journal(
                 librarian_id,
                 book_id,
